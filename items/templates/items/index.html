@@ -1,0 +1,84 @@
+{% extends 'rango/base.html' %}
+{% load staticfiles %}
+<!-- Display add item menu only if user is is_staff or is_superuser-->
+{% block menu %}
+{% if request.user.is_staff or request.user.is_superuser%}
+	<a class="btn btn-default" href="insert">Add Item</a>
+	<a class="btn btn-default" href="insert/bulk">Add Bulk Items</a>
+	<a class="btn btn-default" href="../koha/display">Search Items from KOHA</a>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+ 	{% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    {% if form.errors %}
+        <p style="color: red;">
+            Please correct the error{{ form.errors|pluralize }} below.
+        </p>
+    {% endif %}
+
+<!-- For displaying list view of items -->
+
+{% if item_list %}
+	<div class="row">
+		{% for item in item_list %}
+	        <div class="col-md-4">
+	        	{% with item.uploadfile_set.all|first as image %}
+		        	{% if image.file %}	   
+			        	<img src="/{{image.file}}" width="150" height="200"/>
+			        {% elif item.coverImageUrl %}
+			        	<img src="{{item.coverImageUrl}}" width="200" height="200" />
+			        {% else %}
+			        	<img src="/static/images/no_book_cover.jpg" width="200" height="200" />
+			        {% endif %}
+		        {% endwith %}
+				<h4>{{item.title}}</h4>
+				<ul>
+					<li>-by {{item.author}}</li>
+					<li>Publisher: {{item.publisher}}</li>
+					<li>ISBN: {{item.ISBN}}</li>
+				</ul>
+				<p>
+				<a class="btn btn-default" href="detail/{{item.id}}" role="button">View details &raquo;</a>
+				<a class="btn btn-default" href="/wishlist/{{item.id}}/add/" role="button">Add to WishList &raquo;</a>
+			</p>
+	        </div>
+	  	{% endfor %}	
+	</div>			
+{% else %}
+    <p>No Items Available.</p>
+{% endif %}
+
+
+<!-- {% if item_list %}
+	<div class="row">
+		{% for item in item_list %}
+	        <div class="col-md-4">
+	        	{% if image %}	        	
+		        	<img src="/{{image}}" height="250" />
+		        {% elif item.coverImageUrl %}
+		        	<img src="{{item.coverImageUrl}}" height="250" />
+		        {% else %}
+		        	<img src="/static/images/no_book_cover.jpg" height="250" />
+		        {% endif %}
+				<h4>{{item.title}}</h4>
+				<ul>
+					<li>-by {{item.author}}</li>
+					<li>Publisher: {{item.publisher}}</li>
+					<li>ISBN: {{item.ISBN}}</li>
+				</ul>
+				<a class="btn btn-default" href="detail/{{item.id}}" role="button">View details &raquo;</a></p>
+	        </div>
+	  	{% endfor %}	
+	</div>			
+{% else %}
+    <p>No Items Available.</p>
+{% endif %} -->
+
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends 'rango/base.html' %}
+{% load staticfiles %}
+{% block content %}
+ 	{% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    {% if form.errors %}
+        <p style="color: red;">
+            Please correct the error{{ form.errors|pluralize }} below.
+        </p>
+    {% endif %}
+
+<!-- For displaying list view of items -->
+
+{% if review %}
+	{% for review in review %}
+		<ul>
+			<li>{{review.review}}</li>
+			<!-- {% with review.AuthUser_set.all as author %} -->
+			<li>-by {{review.createdBy.username}}</li>
+			<!-- {% endwith %} -->
+			<li>{{review.created}}</li>
+		</ul>
+  	{% endfor %}	
+{% else %}
+    <p>No Reviews Available.</p>
+{% endif %}
+{% endblock %}

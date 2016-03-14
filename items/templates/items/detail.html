@@ -1,0 +1,83 @@
+{% extends 'rango/base.html' %}
+{% load staticfiles %}
+{% load set_var %}
+{% block content %}
+<!-- For displaying items detail -->
+<div class="row">
+	<div class="col-xs-6 col-md-4">
+		{% set count = 0 %}
+		{% for image in item.uploadfile_set.all %}
+			{% if image.deleted == False %}	
+				{% if image.file %}	
+					{% set count = 1 %} 
+		        	<img src="/{{image.file}}" width="200" /><div class="linebreak"></div>
+		        {% endif %}
+		    {% endif %}
+	    {% endfor %}
+
+        {% if filenameFromUrl %}
+        	{% set count = 1 %}
+        	<img src="/static/images/URLImages/{{filenameFromUrl}}" width="200" />
+        {% endif %}
+        {% if count == 0 %}
+        	<img src="/static/images/no_book_cover.jpg" width="200" />
+        {% endif %} 
+	</div>
+	<div class="col-xs-12 col-sm-6 col-md-8">
+		<h4>{{item.title}}</h4>
+		<ul>
+			<li>-by {{item.author}}</li>
+			<li>Publisher: {{item.publisher}}</li>
+			<li>Publication date: {{item.publication_date}}</li>
+			<li>Language: {{item.edition_language}}</li>
+			<li>ISBN: {{item.ISBN}}</li>
+			<li>Awards: {{item.awards}}</li>
+			<li>Summary: {{item.summary}}</li>
+			<li>URL: <a href="{{item.url}}" target="_blank">{{item.url}}</a></li>
+		</ul>
+		<!-- Display edit menu only if user is is_staff or is_superuser-->
+		{% if request.user.is_staff or request.user.is_superuser%}
+			<a class="btn btn-default" href="edit" role="button">Edit &raquo;</a>
+		{% endif %}
+
+		<!-- Review this book -->
+		<a class="btn btn-default" href="/review/post/{{item.id}}">Review this Book</a>
+
+		<div class="col-xs-9">
+			<!-- For displaying table of content Files-->
+			{% for file in item.uploadtableofcontent_set.all %} 
+				<!-- In templates filtering can not be done. The Django framework authors intended a strict separation of presentation code from data logic. 
+				Filtering models is data logic, and outputting HTML is presentation logic. -->
+				{% if file.deleted == False %}
+					{% if file.file %}
+						<a href="../../../{{file.file}}" target="_blank"><img src="/static/images/pdf.jpg"/></a>
+						<a class="btn btn-default" href="/items/download/{{file.file}}">Download</a> Table of Content
+					{% endif %}
+				{% endif %}
+			{% endfor %}
+		</div>
+		<div class="col-xs-9">
+			<!-- For displaying Abstract files -->
+			{% for file in item.uploadabstract_set.all %}
+				{% if file.deleted == False %}
+					{% if file.file %}
+						<a href="../../../{{file.file}}"  target="_blank"><img src="/static/images/pdf.jpg"/></a>
+						<a href="{{file.file}}">Download</a> Abstract
+					{% endif %}
+				{% endif %}
+			{% endfor %}
+		</div>
+	</div>
+</div>
+
+<div class="linebreak"></div>
+	<!-- For Review -->
+Reviews
+{% for reviews in item.reviewitem_set.all %}
+	<ul>
+		<li>{{ reviews.review }}</li>
+		<li>-by {{reviews.createdBy.username}}</li>
+		<li>{{ reviews.created }}</li>
+	</ul>
+{% endfor %}
+{% endblock %}

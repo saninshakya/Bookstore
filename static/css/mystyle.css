@@ -1,0 +1,24 @@
+.error ul {
+    margin: 0;
+    padding: 0;
+}
+
+.error ul li {
+    background-color: red;
+    color: white;
+    display: block;
+    font-size: 10px;
+    margin: 0 0 3px;
+    padding: 4px 5px;
+}
+
+.main_content{
+    padding-top: 20px;
+}
+
+
+.linebreak{
+	margin-bottom: 30px;
+}
+
+

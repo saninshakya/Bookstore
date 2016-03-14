@@ -1,0 +1,29 @@
+{% extends 'rango/base.html' %}
+{% load staticfiles %}
+{% block menu %}
+{% if request.user.is_staff or request.user.is_superuser%}
+	<a class="btn btn-default" href="insert">Add Category</a>
+{% endif %}
+{% endblock %}
+{% block content %}
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+{% if category_list %}
+	<div class="row">
+		<div class="col-md-4">
+			<ul>
+			{% for category in category_list %}
+			    <li> <h4><a href="detail/{{category.id}}/edit">{{category.category}}</a></h4>	</li>		
+	        {% endfor %}
+	  		</ul>
+	  	</div>	
+	</div>			
+{% else %}
+    <p>No Items Available.</p>
+{% endif %}
+{% endblock %}

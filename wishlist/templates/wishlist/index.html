@@ -1,0 +1,61 @@
+{% extends 'rango/base.html' %}
+{% load staticfiles %}
+
+
+
+{% block content %}
+	{% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    {% if form.errors %}
+        <p style="color: red;">
+            Please correct the error{{ form.errors|pluralize }} below.
+        </p>
+    {% endif %}
+
+    {% if wishlists %}
+	<div class="row">
+       <table class="table table-hover">
+	    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Status</th>
+            <th>Date Read</th>
+            <th>Date Added</th>
+            <th>Operations</th>
+        </tr>
+    	</thead>
+        {% for wishlist in wishlists %}
+        <tbody>
+			<tr>
+				<form class="form-horizontal" action="/wishlist/{{ wishlist.id}}/update/" method="post">
+				{% csrf_token %}
+				<td>{{wishlist.item.title}}</td>
+				<td>
+					<select class="form-control" id="status" name="status">
+						<option value="">-</option>
+						<option value="Reading" {% if wishlist.status == "Reading" %} selected=selected {% endif %}>Reading</option>
+						<option value="To read" {% if wishlist.status == "To read" %} selected=selected {% endif %} >To read</option>
+					</select>
+				</td>
+				<td>
+					<input  class="form-control" type="date" name="readdate" value="{{wishlist.readDate|date:"Y-m-d"}}">
+				</td>
+				<td>{{wishlist.dateAdded}}</td>
+				<td><input type="submit" class="btn btn-info" value="Update" /> <a href="/wishlist/{{ wishlist.id}}/delete/" class="btn btn-info">Delete</a></td>
+			</form>
+			</tr>
+		</tbody>
+        {% endfor %}
+	    
+	</table>
+	  		
+	</div>			
+{% else %}
+    <p>No Items Available.</p>
+{% endif %}
+{% endblock %}
